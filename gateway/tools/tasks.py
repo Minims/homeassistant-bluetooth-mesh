@@ -39,7 +39,7 @@ class Tasks:
             logging.exception(f"Task failed: {exc}")
             # force cancellation of all tasks
             # depending on the configuration, this should lead to service restart
-            self._shutdown()
+            await self._shutdown()
         if name:
             logging.debug(f"{name} completed")
 

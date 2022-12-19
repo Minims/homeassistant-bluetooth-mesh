@@ -110,7 +110,7 @@ class MqttGateway(Application):
             self._new_keys.add(name)
         try:
             return bytes.fromhex(keychain[name])
-        except Exception as exp:  # pylint: disable=broad-except
+        except ValueError as exp:  # pylint: disable=broad-except
             raise InvalidKey(f"Invalid device key: {keychain[name]} / {exp}") from exp
 
     def _initialize(self):

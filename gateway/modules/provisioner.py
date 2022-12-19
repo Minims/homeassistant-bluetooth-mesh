@@ -64,7 +64,7 @@ class ProvisionerModule(Module):
 
         try:
             uuid = UUID(args.uuid)
-        except Exception as exp:  # pylint: disable=broad-except
+        except (TypeError, ValueError) as exp:  # pylint: disable=broad-except
             logging.info(f"Invalid uuid: {uuid}: {exp}")
             return
 

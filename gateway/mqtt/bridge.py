@@ -27,7 +27,7 @@ class HassMqttBridge:
         try:
             # get handler from property name
             handler = getattr(self, f"_notify_{property}")
-        except Exception as exp:  # pylint: disable=broad-except
+        except AttributeError as exp:  # pylint: disable=broad-except
             logging.warning(f"Missing handler for property {property}: {exp}")
             return
 
@@ -58,7 +58,7 @@ class HassMqttBridge:
                 try:
                     # get handler from command name
                     handler = getattr(self, f"_mqtt_{command}")
-                except Exception as exp:  # pylint: disable=broad-except
+                except AttributeError as exp:  # pylint: disable=broad-except
                     logging.warning(f"Missing handler for command {command}: {exp}")
                     continue
 

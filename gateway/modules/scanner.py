@@ -30,7 +30,7 @@ class ScannerModule(Module):
             self._unprovisioned.add(uuid)
             logging.info(f"Found unprovisioned node: {uuid}")
             logging.info(f"Options not used: {options}")
-        except ScanException as exp:
+        except (ValueError, TypeError, ScanException) as exp:
             logging.exception(f"Failed to retrieve UUID: {exp}")
 
     async def handle_cli(self, args):

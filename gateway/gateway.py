@@ -47,6 +47,7 @@ class MainElement(Element):
         models.GenericOnOffClient,
         models.LightLightnessClient,
         models.LightCTLClient,
+        models.LightHSLClient,
     ]
 
 
@@ -159,6 +160,8 @@ class MqttGateway(Application):
         client = self.elements[0][models.LightLightnessClient]
         await client.bind(self.app_keys[0][0])
         client = self.elements[0][models.LightCTLClient]
+        await client.bind(self.app_keys[0][0])
+        client = self.elements[0][models.LightHSLClient]
         await client.bind(self.app_keys[0][0])
 
     async def _try_bind_node(self, node):

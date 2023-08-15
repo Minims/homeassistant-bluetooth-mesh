@@ -110,7 +110,7 @@ class MqttGateway(Application):
             self._new_keys.add(name)
         try:
             return bytes.fromhex(keychain[name])
-        except Exception as exp:  # pylint: disable=broad-except
+        except ValueError as exp:  # pylint: disable=broad-except
             raise InvalidKey(f"Invalid device key: {keychain[name]} / {exp}") from exp
 
     def _initialize(self):
@@ -233,6 +233,24 @@ class MqttGateway(Application):
             await tasks.gather()
 
 
+async def run(args):
+    """
+    Wrap application startup and cleanup
+    """
+
+    loop = asyncio.get_event_loop()
+    app = MqttGateway(loop, args.basedir)
+
+    await app.run(args)
+
+    orphans = asyncio.all_tasks()
+    for orphan in orphans:
+        if orphan != asyncio.current_task():
+            logging.warn(f"Orphaned task {orphan}")
+
+    logging.info("Shutdown complete")
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--leave", action="store_true")
@@ -248,11 +266,8 @@ def main():
 
     args = parser.parse_args()
 
-    loop = asyncio.get_event_loop()
-    app = MqttGateway(loop, args.basedir)
-
     with suppress(KeyboardInterrupt):
-        loop.run_until_complete(app.run(args))
+        asyncio.run(run(args))
 
 
 if __name__ == "__main__":
